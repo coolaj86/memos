@@ -3,7 +3,9 @@ import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/contexts/AuthContext";
+import { useInstance } from "@/contexts/InstanceContext";
 import { useUpdateUserGeneralSetting } from "@/hooks/useUserQueries";
+import { InstanceAccessMode } from "@/types/proto/api/v1/instance_service_pb";
 import { UserSetting_GeneralSetting, UserSetting_GeneralSettingSchema } from "@/types/proto/api/v1/user_service_pb";
 import { loadLocale, useTranslate } from "@/utils/i18n";
 import { convertVisibilityFromString, DEFAULT_VISIBILITY_OPTIONS } from "@/utils/memo";
@@ -18,6 +20,7 @@ import SettingSection from "./SettingSection";
 const PreferencesSection = () => {
   const t = useTranslate();
   const { currentUser, userGeneralSetting: generalSetting, refetchSettings } = useAuth();
+  const { profile } = useInstance();
   const { mutate: updateUserGeneralSetting, isPending: isUpdatingGeneralSetting } = useUpdateUserGeneralSetting(currentUser?.name);
 
   const handleLocaleSelectChange = (locale: Locale) => {
@@ -35,8 +38,11 @@ const PreferencesSection = () => {
   };
 
   const visibilityOptions = useMemo(
-    () => DEFAULT_VISIBILITY_OPTIONS.map((option) => ({ value: option.name, label: t(option.labelKey) })),
-    [t],
+    () =>
+      DEFAULT_VISIBILITY_OPTIONS.filter((option) => !option.requiresPublicSite || profile.accessMode === InstanceAccessMode.PUBLIC).map(
+        (option) => ({ value: option.name, label: t(option.labelKey) }),
+      ),
+    [profile.accessMode, t],
   );
 
   const handleDefaultMemoVisibilityChanged = (value: string) => {
