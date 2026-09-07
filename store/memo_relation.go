@@ -61,7 +61,7 @@ func ValidateMemoRelationEndpointRead(snapshot *MemoRelationEndpointSnapshot) er
 	}
 
 	switch snapshot.EndpointVisibility {
-	case Public, Protected:
+	case Public, Unlisted, Protected:
 		return nil
 	case Private:
 		if snapshot.EndpointCreatorID != snapshot.ActorUserID {

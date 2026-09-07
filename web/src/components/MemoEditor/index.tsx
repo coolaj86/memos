@@ -5,7 +5,8 @@ import { useInstance } from "@/contexts/InstanceContext";
 import { useLocalStorage } from "@/hooks";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { cn } from "@/lib/utils";
-import { InstanceSetting_Key } from "@/types/proto/api/v1/instance_service_pb";
+import { InstanceAccessMode, InstanceSetting_Key } from "@/types/proto/api/v1/instance_service_pb";
+import { Visibility } from "@/types/proto/api/v1/memo_service_pb";
 import { useTranslate } from "@/utils/i18n";
 import { convertVisibilityFromString } from "@/utils/memo";
 import { AudioRecorderPanel, EditorContent, EditorMetadata, FocusModeOverlay, TimestampPopover } from "./components";
@@ -61,7 +62,7 @@ const MemoEditorImpl: React.FC<MemoEditorProps> = ({
   const isSaving = useEditorSelector((s) => s.ui.isLoading.saving);
   const hasTimestamp = useEditorSelector((s) => Boolean(s.timestamps.createTime));
   const { userGeneralSetting } = useAuth();
-  const { aiSetting, fetchSetting } = useInstance();
+  const { aiSetting, fetchSetting, profile } = useInstance();
   const [isAudioRecorderOpen, setIsAudioRecorderOpen] = useState(false);
   const [isTranscribingAudio, setIsTranscribingAudio] = useState(false);
   const { createBlobUrl } = useBlobUrls();
@@ -83,7 +84,13 @@ const MemoEditorImpl: React.FC<MemoEditorProps> = ({
   }, [aiSetting.providers, aiSetting.transcription?.providerId]);
 
   // Get default visibility from user settings
-  const defaultVisibility = userGeneralSetting?.memoVisibility ? convertVisibilityFromString(userGeneralSetting.memoVisibility) : undefined;
+  const configuredDefaultVisibility = userGeneralSetting?.memoVisibility
+    ? convertVisibilityFromString(userGeneralSetting.memoVisibility)
+    : undefined;
+  const defaultVisibility =
+    configuredDefaultVisibility === Visibility.PUBLIC && profile.accessMode !== InstanceAccessMode.PUBLIC
+      ? Visibility.UNLISTED
+      : configuredDefaultVisibility;
   const editorCacheKey = cacheService.key(currentUser?.name ?? "", cacheKey);
 
   const { isInitialized } = useMemoInit({

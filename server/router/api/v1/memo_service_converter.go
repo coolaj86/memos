@@ -404,6 +404,8 @@ func convertVisibilityFromStore(visibility store.Visibility) v1pb.Visibility {
 		return v1pb.Visibility_PROTECTED
 	case store.Public:
 		return v1pb.Visibility_PUBLIC
+	case store.Unlisted:
+		return v1pb.Visibility_UNLISTED
 	case store.SpaceAudience:
 		return v1pb.Visibility_SPACE
 	default:
@@ -419,6 +421,8 @@ func validateCreateMemoVisibility(visibility v1pb.Visibility) (store.Visibility,
 		return store.Protected, nil
 	case v1pb.Visibility_PUBLIC:
 		return store.Public, nil
+	case v1pb.Visibility_UNLISTED:
+		return store.Unlisted, nil
 	case v1pb.Visibility_SPACE:
 		return store.SpaceAudience, nil
 	default:

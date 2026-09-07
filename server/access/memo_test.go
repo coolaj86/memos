@@ -25,6 +25,12 @@ func TestCheckMemoReadMemoLocalAudiences(t *testing.T) {
 	require.True(t, CheckMemoReadContext(MemoReadContext{Memo: private, SharedMemoID: &shareID, CreatorValid: true, SpaceValid: true}).Allowed())
 }
 
+func TestCheckMemoReadUnlistedAllowsDirectAnonymousRead(t *testing.T) {
+	memo := &store.Memo{ID: 4, CreatorID: 1, RowStatus: store.Normal, Visibility: store.Unlisted}
+	decision := CheckMemoReadContext(MemoReadContext{Memo: memo, CreatorValid: true, SpaceValid: true})
+	require.Equal(t, MemoReadDecision{Class: MemoReadClassPublic}, decision)
+}
+
 func TestCheckMemoReadCommentDoesNotInheritContext(t *testing.T) {
 	const ownerID int32 = 1
 	parentUID := "context-memo"

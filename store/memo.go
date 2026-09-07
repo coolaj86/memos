@@ -32,6 +32,8 @@ type Visibility string
 const (
 	// Public is the PUBLIC visibility.
 	Public Visibility = "PUBLIC"
+	// Unlisted is the UNLISTED visibility.
+	Unlisted Visibility = "UNLISTED"
 	// Protected is the PROTECTED visibility.
 	Protected Visibility = "PROTECTED"
 	// Private is the PRIVATE visibility.
@@ -364,7 +366,7 @@ func sameMemoSpace(left, right *int32) bool {
 }
 
 func isValidVisibility(visibility Visibility) bool {
-	return visibility == Public || visibility == Protected || visibility == Private || visibility == SpaceAudience
+	return visibility == Public || visibility == Unlisted || visibility == Protected || visibility == Private || visibility == SpaceAudience
 }
 
 func (s *Store) DeleteMemo(ctx context.Context, delete *DeleteMemo) error {

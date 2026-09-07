@@ -62,7 +62,7 @@ func CheckMemoReadContext(ctx MemoReadContext) MemoReadDecision {
 	if memo == nil || !ctx.CreatorValid {
 		return MemoReadDecision{Denial: MemoReadDenialNotFound}
 	}
-	if memo.Visibility != store.Public && memo.Visibility != store.Protected && memo.Visibility != store.Private && memo.Visibility != store.SpaceAudience {
+	if memo.Visibility != store.Public && memo.Visibility != store.Unlisted && memo.Visibility != store.Protected && memo.Visibility != store.Private && memo.Visibility != store.SpaceAudience {
 		return MemoReadDecision{Denial: MemoReadDenialNotFound}
 	}
 	if memo.Visibility == store.SpaceAudience && (memo.SpaceID == nil || !ctx.SpaceValid) {
@@ -92,6 +92,11 @@ func CheckMemoReadContext(ctx MemoReadContext) MemoReadDecision {
 			return MemoReadDecision{Class: MemoReadClassPrivate}
 		}
 		return MemoReadDecision{Denial: MemoReadDenialUnauthenticated}
+	case store.Unlisted:
+		if viewerActive {
+			return MemoReadDecision{Class: MemoReadClassPrivate}
+		}
+		return MemoReadDecision{Class: MemoReadClassPublic}
 	case store.Protected:
 		if viewerActive {
 			return MemoReadDecision{Class: MemoReadClassPrivate}
