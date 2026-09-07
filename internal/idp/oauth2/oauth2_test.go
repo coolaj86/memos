@@ -183,7 +183,7 @@ func TestIdentityProviderMapsUsernameSeparatelyFromIdentifier(t *testing.T) {
 		TokenUrl:     "https://example.com/token",
 		UserInfoUrl:  server.URL,
 		FieldMapping: &storepb.FieldMapping{
-			Identifier:  "sub",
+			Identifier:  "missing sub",
 			Username:    "preferred_username nickname",
 			DisplayName: "nickname name username",
 		},

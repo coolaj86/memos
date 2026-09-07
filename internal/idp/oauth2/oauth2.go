@@ -118,9 +118,7 @@ func (p *IdentityProvider) UserInfo(ctx context.Context, token string) (*idp.Ide
 			userInfo.Claims[name] = value
 		}
 	}
-	if v, ok := claims[p.config.FieldMapping.Identifier].(string); ok {
-		userInfo.Identifier = v
-	}
+	userInfo.Identifier = firstMappedClaim(userInfo.Claims, p.config.FieldMapping.Identifier)
 	if userInfo.Identifier == "" {
 		return nil, errors.Errorf("the field %q is not found in claims or has empty value", p.config.FieldMapping.Identifier)
 	}
