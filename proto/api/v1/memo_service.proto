@@ -159,6 +159,8 @@ enum Visibility {
   // PUBLIC: signed-in users can read the memo; anonymous visitors can read it
   // when instance policy permits.
   PUBLIC = 3;
+  // UNLISTED: anyone with the direct URL can read the memo, but it is not listed.
+  UNLISTED = 5;
   // SPACE: active members of the memo's space can read it.
   SPACE = 4;
 }
