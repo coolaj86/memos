@@ -454,6 +454,8 @@
       "protected-description": "Daxil olmuş istifadəçilərə görünür",
       "public": "İctimai",
       "public-description": "Hamıya görünür",
+      "unlisted": "Siyahıda olmayan",
+      "unlisted-description": "Linki olan hər kəsə görünür",
       "space": "Sahə",
       "space-description": "Bu sahənin üzvlərinə görünür"
     }
