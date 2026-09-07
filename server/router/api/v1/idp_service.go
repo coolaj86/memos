@@ -199,8 +199,10 @@ func convertIdentityProviderFromStore(identityProvider *storepb.IdentityProvider
 					TokenUrl:    oauth2Config.TokenUrl,
 					UserInfoUrl: oauth2Config.UserInfoUrl,
 					Scopes:      oauth2Config.Scopes,
+					IdentifierFilterField: oauth2Config.IdentifierFilterField,
 					FieldMapping: &v1pb.FieldMapping{
 						Identifier:  oauth2Config.FieldMapping.Identifier,
+						Username:    oauth2Config.FieldMapping.Username,
 						DisplayName: oauth2Config.FieldMapping.DisplayName,
 						Email:       oauth2Config.FieldMapping.Email,
 						AvatarUrl:   oauth2Config.FieldMapping.AvatarUrl,
@@ -234,8 +236,10 @@ func convertIdentityProviderConfigToStore(identityProviderType v1pb.IdentityProv
 					TokenUrl:     oauth2Config.TokenUrl,
 					UserInfoUrl:  oauth2Config.UserInfoUrl,
 					Scopes:       oauth2Config.Scopes,
+					IdentifierFilterField: oauth2Config.IdentifierFilterField,
 					FieldMapping: &storepb.FieldMapping{
 						Identifier:  oauth2Config.FieldMapping.Identifier,
+						Username:    oauth2Config.FieldMapping.Username,
 						DisplayName: oauth2Config.FieldMapping.DisplayName,
 						Email:       oauth2Config.FieldMapping.Email,
 						AvatarUrl:   oauth2Config.FieldMapping.AvatarUrl,

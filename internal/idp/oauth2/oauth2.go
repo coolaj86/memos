@@ -111,7 +111,12 @@ func (p *IdentityProvider) UserInfo(ctx context.Context, token string) (*idp.Ide
 	if err := json.Unmarshal(body, &claims); err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response body")
 	}
-	userInfo := &idp.IdentityProviderUserInfo{}
+	userInfo := &idp.IdentityProviderUserInfo{Claims: make(map[string]string)}
+	for name, value := range claims {
+		if value, ok := value.(string); ok {
+			userInfo.Claims[name] = value
+		}
+	}
 	if v, ok := claims[p.config.FieldMapping.Identifier].(string); ok {
 		userInfo.Identifier = v
 	}
@@ -120,6 +125,14 @@ func (p *IdentityProvider) UserInfo(ctx context.Context, token string) (*idp.Ide
 	}
 
 	// Best effort to map optional fields
+	if p.config.FieldMapping.Username != "" {
+		if v, ok := claims[p.config.FieldMapping.Username].(string); ok {
+			userInfo.Username = v
+		}
+	}
+	if userInfo.Username == "" {
+		userInfo.Username = userInfo.Identifier
+	}
 	if p.config.FieldMapping.DisplayName != "" {
 		if v, ok := claims[p.config.FieldMapping.DisplayName].(string); ok {
 			userInfo.DisplayName = v
