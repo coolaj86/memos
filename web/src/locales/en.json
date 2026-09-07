@@ -875,6 +875,8 @@
       "identifier-filter": "External ID Filter",
       "identifier-filter-description": "Optional regex used to allow or restrict which external identifiers may sign in.",
       "filter-pattern": "Filter pattern",
+      "filter-pattern-description": "Go RE2 regular expression. Example: ^[^@]+@example\\.com$.",
+      "filter-pattern-tool": "Test with regex101",
       "filter-field": "Filter field",
       "filter-field-description": "Optional upstream claim name. Default: the field mapped to External ID.",
       "filter-field-placeholder": "email, preferred_username, or custom claim",
