@@ -17,6 +17,25 @@ import (
 	"github.com/usememos/memos/store"
 )
 
+func TestSSOSignInUsesMappedUsername(t *testing.T) {
+	ts := NewTestService(t)
+	defer ts.Cleanup()
+
+	ctx := context.Background()
+	mockIDP := newMockOAuthServer(t, "mapped-username-code", "mapped-username-token", map[string]any{
+		"sub":                "stable-subject",
+		"preferred_username": "alice",
+	})
+	defer mockIDP.Close()
+
+	idpName := createTestingOAuthIdentityProviderWithUsername(ctx, t, ts, mockIDP.URL, "mapped-username", "preferred_username")
+	response, err := signInWithTestingSSO(ctx, ts, idpName, "mapped-username-code")
+	require.NoError(t, err)
+	require.Equal(t, "alice", response.User.Username)
+
+	assertSingleSSOLink(ctx, t, ts, "mapped-username", "stable-subject", response.User.Username)
+}
+
 func TestSSOSignInUsesValidIdentifierAsUsername(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -205,7 +224,7 @@ func TestSSOSignInScopesSameIdentifierByProvider(t *testing.T) {
 	users, err := ts.Store.ListUsers(ctx, &store.FindUser{})
 	require.NoError(t, err)
 	require.Len(t, users, 2)
-	identities, err := ts.Store.ListUserIdentities(ctx, &store.FindUserIdentity{ExternUID: ptr("alice")})
+	identities, err := ts.Store.ListUserIdentities(ctx, &store.FindUserIdentity{ExternUID: new("alice")})
 	require.NoError(t, err)
 	require.Len(t, identities, 2)
 }
@@ -228,14 +247,12 @@ func TestConcurrentSSOFirstSignInConvergesOnOneUser(t *testing.T) {
 	errs := make(chan error, signInCount)
 	var waitGroup sync.WaitGroup
 	for range signInCount {
-		waitGroup.Add(1)
-		go func() {
-			defer waitGroup.Done()
+		waitGroup.Go(func() {
 			<-start
 			response, err := signInWithTestingSSO(ctx, ts, idpName, "concurrent-code")
 			results <- response
 			errs <- err
-		}()
+		})
 	}
 
 	close(start)
@@ -376,6 +393,7 @@ func assertSingleSSOLink(ctx context.Context, t *testing.T, ts *TestService, pro
 	require.Len(t, identities, 1)
 }
 
+//go:fix inline
 func ptr[T any](value T) *T {
-	return &value
+	return new(value)
 }
