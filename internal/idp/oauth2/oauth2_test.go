@@ -172,7 +172,7 @@ func TestIdentityProvider(t *testing.T) {
 func TestIdentityProviderMapsUsernameSeparatelyFromIdentifier(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, err := io.WriteString(w, `{"sub":"stable-subject","preferred_username":"alice"}`)
+		_, err := io.WriteString(w, `{"sub":"stable-subject","preferred_username":"alice","nickname":"","name":"Alice Name"}`)
 		require.NoError(t, err)
 	}))
 	defer server.Close()
@@ -182,7 +182,11 @@ func TestIdentityProviderMapsUsernameSeparatelyFromIdentifier(t *testing.T) {
 		ClientSecret: "secret",
 		TokenUrl:     "https://example.com/token",
 		UserInfoUrl:  server.URL,
-		FieldMapping: &storepb.FieldMapping{Identifier: "sub", Username: "preferred_username"},
+		FieldMapping: &storepb.FieldMapping{
+			Identifier:  "sub",
+			Username:    "preferred_username nickname",
+			DisplayName: "nickname name username",
+		},
 	})
 	require.NoError(t, err)
 
@@ -190,7 +194,7 @@ func TestIdentityProviderMapsUsernameSeparatelyFromIdentifier(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "stable-subject", userInfo.Identifier)
 	require.Equal(t, "alice", userInfo.Username)
-	require.Equal(t, "alice", userInfo.DisplayName)
+	require.Equal(t, "Alice Name", userInfo.DisplayName)
 }
 
 func TestIdentityProviderExchangeTokenClientAuthentication(t *testing.T) {

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -125,31 +126,24 @@ func (p *IdentityProvider) UserInfo(ctx context.Context, token string) (*idp.Ide
 	}
 
 	// Best effort to map optional fields
-	if p.config.FieldMapping.Username != "" {
-		if v, ok := claims[p.config.FieldMapping.Username].(string); ok {
-			userInfo.Username = v
-		}
-	}
+	userInfo.Username = firstMappedClaim(userInfo.Claims, p.config.FieldMapping.Username)
 	if userInfo.Username == "" {
 		userInfo.Username = userInfo.Identifier
 	}
-	if p.config.FieldMapping.DisplayName != "" {
-		if v, ok := claims[p.config.FieldMapping.DisplayName].(string); ok {
-			userInfo.DisplayName = v
-		}
-	}
+	userInfo.DisplayName = firstMappedClaim(userInfo.Claims, p.config.FieldMapping.DisplayName)
 	if userInfo.DisplayName == "" {
 		userInfo.DisplayName = userInfo.Username
 	}
-	if p.config.FieldMapping.Email != "" {
-		if v, ok := claims[p.config.FieldMapping.Email].(string); ok {
-			userInfo.Email = v
-		}
-	}
-	if p.config.FieldMapping.AvatarUrl != "" {
-		if v, ok := claims[p.config.FieldMapping.AvatarUrl].(string); ok {
-			userInfo.AvatarURL = v
-		}
-	}
+	userInfo.Email = firstMappedClaim(userInfo.Claims, p.config.FieldMapping.Email)
+	userInfo.AvatarURL = firstMappedClaim(userInfo.Claims, p.config.FieldMapping.AvatarUrl)
 	return userInfo, nil
+}
+
+func firstMappedClaim(claims map[string]string, mapping string) string {
+	for _, field := range strings.FieldsFunc(mapping, func(r rune) bool { return r == ',' || r == ' ' || r == '\t' || r == '\n' }) {
+		if value := claims[field]; value != "" {
+			return value
+		}
+	}
+	return ""
 }
