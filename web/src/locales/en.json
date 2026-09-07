@@ -889,7 +889,7 @@
       "mapping-display-name-short": "name",
       "mapping-email-short": "email",
       "mapping-identifier-short": "external_id",
-      "mapping-username-short": "username",
+      "mapping-username-short": "preferred_username",
       "mapping-none": "Not configured",
       "no-sso-found": "No SSO found.",
       "not-linked": "Not linked",
