@@ -3320,7 +3320,7 @@ components:
                     description: Required. The display title of the identity provider.
                 identifierFilter:
                     type: string
-                    description: Optional. Filter applied to user identifiers.
+                    description: Optional. Regular expression applied to the selected upstream claim.
                 config:
                     allOf:
                         - $ref: '#/components/schemas/IdentityProviderConfig'
@@ -4175,6 +4175,9 @@ components:
                         type: string
                 fieldMapping:
                     $ref: '#/components/schemas/FieldMapping'
+                identifierFilterField:
+                    type: string
+                    description: Optional. Upstream claim used by identifier_filter. Empty means the mapped external ID.
         PersonalAccessToken:
             type: object
             properties:
