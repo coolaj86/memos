@@ -163,6 +163,35 @@ func TestIdentityProvider(t *testing.T) {
 	assert.Equal(t, wantUserInfo, userInfoResult)
 }
 
+func TestIdentityProviderClaimFallbacks(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, err := io.WriteString(w, `{"sub":"subject","nickname":"","name":"Alice","email":"","preferred_email":"alice@example.com","picture":"https://example.com/alice.png"}`)
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	provider, err := NewIdentityProvider(&storepb.OAuth2Config{
+		ClientId:    "client",
+		TokenUrl:    "https://example.com/token",
+		UserInfoUrl: server.URL,
+		FieldMapping: &storepb.FieldMapping{
+			Identifier:  "missing sub",
+			DisplayName: "nickname name preferred_username",
+			Email:       "email preferred_email",
+			AvatarUrl:   "avatar picture",
+		},
+	})
+	require.NoError(t, err)
+
+	userInfo, err := provider.UserInfo(context.Background(), "token")
+	require.NoError(t, err)
+	require.Equal(t, "subject", userInfo.Identifier)
+	require.Equal(t, "Alice", userInfo.DisplayName)
+	require.Equal(t, "alice@example.com", userInfo.Email)
+	require.Equal(t, "https://example.com/alice.png", userInfo.AvatarURL)
+}
+
 func TestIdentityProviderExchangeTokenClientAuthentication(t *testing.T) {
 	const (
 		clientID     = "test-client-id"
