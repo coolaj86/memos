@@ -7,15 +7,16 @@
 package apiv1
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -37,6 +38,8 @@ const (
 	// PUBLIC: signed-in users can read the memo; anonymous visitors can read it
 	// when instance policy permits.
 	Visibility_PUBLIC Visibility = 3
+	// UNLISTED: anyone with the direct URL can read the memo, but it is not listed.
+	Visibility_UNLISTED Visibility = 5
 	// SPACE: active members of the memo's space can read it.
 	Visibility_SPACE Visibility = 4
 )
@@ -48,6 +51,7 @@ var (
 		1: "PRIVATE",
 		2: "PROTECTED",
 		3: "PUBLIC",
+		5: "UNLISTED",
 		4: "SPACE",
 	}
 	Visibility_value = map[string]int32{
@@ -55,6 +59,7 @@ var (
 		"PRIVATE":                1,
 		"PROTECTED":              2,
 		"PUBLIC":                 3,
+		"UNLISTED":               5,
 		"SPACE":                  4,
 	}
 )
@@ -2507,14 +2512,15 @@ const file_api_v1_memo_service_proto_rawDesc = "" +
 	"\x03url\x18\x01 \x01(\tR\x03url\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x14\n" +
-	"\x05image\x18\x04 \x01(\tR\x05image*[\n" +
+	"\x05image\x18\x04 \x01(\tR\x05image*i\n" +
 	"\n" +
 	"Visibility\x12\x1a\n" +
 	"\x16VISIBILITY_UNSPECIFIED\x10\x00\x12\v\n" +
 	"\aPRIVATE\x10\x01\x12\r\n" +
 	"\tPROTECTED\x10\x02\x12\n" +
 	"\n" +
-	"\x06PUBLIC\x10\x03\x12\t\n" +
+	"\x06PUBLIC\x10\x03\x12\f\n" +
+	"\bUNLISTED\x10\x05\x12\t\n" +
 	"\x05SPACE\x10\x042\x91\x15\n" +
 	"\vMemoService\x12e\n" +
 	"\n" +

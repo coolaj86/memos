@@ -454,6 +454,8 @@
       "protected-description": "Visible to signed-in users",
       "public": "Public",
       "public-description": "Visible to everyone",
+      "unlisted": "Unlisted",
+      "unlisted-description": "Visible to anyone with the link",
       "space": "Space",
       "space-description": "Visible to members of this space"
     }
