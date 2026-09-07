@@ -495,7 +495,7 @@ function CreateIdentityProviderDialog({ open, onOpenChange, identityProvider, on
                     {t("setting.sso.filter-pattern-description")} {" "}
                     <a
                       href="https://regex101.com/?flavor=golang"
-                      target="_blank"
+                      target="golang_re2_tester"
                       rel="noreferrer"
                       className="underline underline-offset-2"
                     >
