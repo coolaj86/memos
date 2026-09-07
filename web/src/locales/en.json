@@ -882,7 +882,7 @@
       "mapping-avatar-short": "avatar",
       "mapping-display-name-short": "name",
       "mapping-email-short": "email",
-      "mapping-identifier-short": "external ID",
+      "mapping-identifier-short": "external_id",
       "mapping-username-short": "username",
       "mapping-none": "Not configured",
       "no-sso-found": "No SSO found.",
