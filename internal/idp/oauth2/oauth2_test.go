@@ -190,6 +190,7 @@ func TestIdentityProviderMapsUsernameSeparatelyFromIdentifier(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "stable-subject", userInfo.Identifier)
 	require.Equal(t, "alice", userInfo.Username)
+	require.Equal(t, "alice", userInfo.DisplayName)
 }
 
 func TestIdentityProviderExchangeTokenClientAuthentication(t *testing.T) {

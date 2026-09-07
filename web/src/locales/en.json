@@ -882,7 +882,7 @@
       "field-mapping-description": "Map the upstream profile fields used to identify the user and prefill profile data.",
       "field-mapping-identifier-description": "Used as the stable external identifier when signing in or linking an account. Required. Suggested: sub.",
       "field-mapping-username-description": "Optional username suggestion for new accounts. Default: same as External ID. Suggested: preferred_username.",
-      "field-mapping-display-name-description": "Default: same as External ID. Suggested: name.",
+      "field-mapping-display-name-description": "Default: Preferred Username. Suggested: name.",
       "field-mapping-email-description": "Default: empty. Suggested: email.",
       "field-mapping-avatar-description": "Default: empty. Suggested: picture.",
       "linked": "Linked",

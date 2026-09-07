@@ -139,7 +139,7 @@ func (p *IdentityProvider) UserInfo(ctx context.Context, token string) (*idp.Ide
 		}
 	}
 	if userInfo.DisplayName == "" {
-		userInfo.DisplayName = userInfo.Identifier
+		userInfo.DisplayName = userInfo.Username
 	}
 	if p.config.FieldMapping.Email != "" {
 		if v, ok := claims[p.config.FieldMapping.Email].(string); ok {
