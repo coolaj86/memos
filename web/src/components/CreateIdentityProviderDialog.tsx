@@ -237,7 +237,7 @@ function FormField({
 }: {
   label: string;
   required?: boolean;
-  description?: string;
+  description?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -488,7 +488,22 @@ function CreateIdentityProviderDialog({ open, onOpenChange, identityProvider, on
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <FormField label={t("setting.sso.filter-pattern")} description={t("setting.sso.identifier-filter-description")}>
+              <FormField
+                label={t("setting.sso.filter-pattern")}
+                description={
+                  <>
+                    {t("setting.sso.filter-pattern-description")} {" "}
+                    <a
+                      href="https://regex101.com/?flavor=golang"
+                      target="golang_re2_tester"
+                      rel="noreferrer"
+                      className="underline underline-offset-2"
+                    >
+                      {t("setting.sso.filter-pattern-tool")}
+                    </a>
+                  </>
+                }
+              >
                 <Input
                   placeholder={t("setting.sso.filter-pattern")}
                   value={basicInfo.identifierFilter}
